@@ -54,4 +54,5 @@ class GameRepository {
     "",
   ];
   String name = "tictactoe";
+  String lastName = "multiplayer game";
 }
