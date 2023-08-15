@@ -54,5 +54,6 @@ class GameRepository {
     "",
   ];
   String name = "tictactoe";
+  String middleName = "flutter";
   String lastName = "multiplayer game";
 }
