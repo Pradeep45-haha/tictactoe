@@ -13,7 +13,8 @@ class _TickTacToeState extends State<TickTacToe> {
   @override
   Widget build(BuildContext context) {
     GameBloc gameBloc = BlocProvider.of<GameBloc>(context);
-    return BlocBuilder<GameBloc, GameState>(
+    return BlocConsumer<GameBloc, GameState>(
+      listener: (context, state) {},
       builder: (context, state) {
         return GridView.builder(
           itemCount: 9,
@@ -49,7 +50,7 @@ class _TickTacToeState extends State<TickTacToe> {
                       shadows: const [
                         Shadow(
                           color: Colors.blue,
-                          blurRadius: 60,
+                          blurRadius: 40,
                         ),
                       ],
                     ),

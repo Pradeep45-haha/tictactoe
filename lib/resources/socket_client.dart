@@ -15,12 +15,10 @@ class SocketClient {
     );
 
     socket!.connect();
-   
 
     socket!.onError((data) {
       debugPrint("socket on error $data");
     });
-    
   }
   static SocketClient get instance {
     return _instance ??= SocketClient._();

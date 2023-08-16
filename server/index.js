@@ -12,6 +12,7 @@ var server = http.createServer(app);
 var io = require("socket.io")(server);
 
 io.on('connection', (socket) => {
+    
     console.log("socket connection successful");
     socket.on('joinRoom', async ({ nickName, roomId }) => {
         try {
@@ -81,7 +82,9 @@ io.on('connection', (socket) => {
 
         socket.on("boardTap", async ({ index, roomId, }) => {
             try {
+
                 console.log("boardTap");
+                console.log(roomId);
                 let room = await Room.findById(roomId);
                 let choice = room.turn.playerType;
                 if (room.turnIndex == 0) {
@@ -92,7 +95,7 @@ io.on('connection', (socket) => {
                     room.turn = room.players[0];
                 }
                 room = await room.save();
-
+                console.log(`after saving room room id is ${room._id}`);
                 io.to(roomId).emit("tapped", {
                     index, choice, room,
                 })

@@ -19,19 +19,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({required this.gameRepository}) : super(GameInitial()) {
     on<GameEvent>(
       (event, emit) {
-        callback(data) {
-          debugPrint("game initial callback running");
-          //debugPrint("from game bloc $data");
-          index = data["index"];
-          gameRepository.room = Room.fromMap(data["room"]);
-          gameRepository.ticTacToeData[index] = data["choice"];
-          gameRepository.filledBoxes = gameRepository.filledBoxes + 1;
-
-          add(
-            PlayerGameDataFromServerEvent(),
-          );
-        }
-
         if (event is PlayerGameDataFromServerEvent) {
           emit(
             PlayerGameDataFromServerState(),
@@ -39,6 +26,23 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         }
 
         if (event is GameInitialEvent) {
+          debugPrint(
+              "from gameInitial event player tapped on index ${gameRepository.ticTacToeData}");
+          callback(data) {
+            debugPrint("before emitTap: ${gameRepository.room.id}");
+            debugPrint("game initial callback running");
+            index = data["index"];
+            gameRepository.room = Room.fromMap(data["room"]);
+            gameRepository.ticTacToeData[index] = data["choice"];
+            debugPrint(
+                "tictactoe data ${gameRepository.ticTacToeData.toString()}");
+            gameRepository.filledBoxes = gameRepository.filledBoxes + 1;
+            debugPrint("after emitTap: ${gameRepository.room.id}");
+            add(
+              PlayerGameDataFromServerEvent(),
+            );
+          }
+
           if (!isTapListenerCalled) {
             socketMethods.tapListener(callback);
             isTapListenerCalled = true;
@@ -47,8 +51,17 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
         if (event is PlayerTappedEvent) {
           debugPrint("player tapped event detected in bloc");
-          socketMethods.tapGrid(event.index, gameRepository.room.id,
-              gameRepository.ticTacToeData);
+          debugPrint("player tapped on index ${event.index}");
+          debugPrint("player tapped on index ${gameRepository.ticTacToeData}");
+          if (gameRepository.ticTacToeData[event.index] == "") {
+            debugPrint("from game bloc tapGrid called");
+            debugPrint(
+                "roomId from payer event tapped ${gameRepository.room.id}");
+            socketMethods.tapGrid(
+              event.index,
+              gameRepository.room.id,
+            );
+          }
         }
       },
     );

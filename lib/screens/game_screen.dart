@@ -17,7 +17,7 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {      
     
     GameBloc gameBloc = BlocProvider.of<GameBloc>(context);
-   // gameBloc.add();
+    gameBloc.add(GameInitialEvent());
     debugPrint(
         "from game screen gamebloc data${gameBloc.gameRepository.room.players[0].nickName}");
     return const SafeArea(
