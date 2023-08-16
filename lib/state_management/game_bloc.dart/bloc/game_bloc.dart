@@ -10,8 +10,8 @@ part 'game_event.dart';
 part 'game_state.dart';
 
 class GameBloc extends Bloc<GameEvent, GameState> {
-  bool tapGridListner = false;
   final GameRepository gameRepository;
+  bool isTapListenerCalled = false;
   int index = 0;
 
   SocketMethods socketMethods = SocketMethods();
@@ -19,46 +19,36 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   GameBloc({required this.gameRepository}) : super(GameInitial()) {
     on<GameEvent>(
       (event, emit) {
-        if (event is GameInitialEvent) {
-          debugPrint("game initial event running");
+        callback(data) {
+          debugPrint("game initial callback running");
+          //debugPrint("from game bloc $data");
+          index = data["index"];
+          gameRepository.room = Room.fromMap(data["room"]);
+          gameRepository.ticTacToeData[index] = data["choice"];
+          gameRepository.filledBoxes = gameRepository.filledBoxes + 1;
 
-          callback(dynamic data) {
-            gameRepository.room = Room.fromMap(data);
-            add(
-              NewPlayerJoinedEvent(),
-            );
-          }
-
-          socketMethods.newPlayerJoined(callback);
+          add(
+            PlayerGameDataFromServerEvent(),
+          );
         }
-        if (event is NewPlayerJoinedEvent) {
-          emit(NewPlayerJoinedState());
-        }
-        if (event is PlayerTappedEvent) {
-          socketMethods.tapGrid(event.index, gameRepository.room.id,
-              gameRepository.ticTacToeData);
-          if (tapGridListner) {
-            return;
-          }
-          callback(data) {
-            debugPrint("from game bloc $data");
-            index = data["index"];
-            gameRepository.room = Room.fromMap(data["room"]);
-            gameRepository.ticTacToeData[index] = data["choice"];
-            gameRepository.filledBoxes = gameRepository.filledBoxes + 1;
 
-            add(
-              PlayerGameDataFromServerEvent(),
-            );
-          }
-
-          socketMethods.tapListener(callback);
-          tapGridListner = true;
-        }
         if (event is PlayerGameDataFromServerEvent) {
           emit(
             PlayerGameDataFromServerState(),
           );
+        }
+
+        if (event is GameInitialEvent) {
+          if (!isTapListenerCalled) {
+            socketMethods.tapListener(callback);
+            isTapListenerCalled = true;
+          }
+        }
+
+        if (event is PlayerTappedEvent) {
+          debugPrint("player tapped event detected in bloc");
+          socketMethods.tapGrid(event.index, gameRepository.room.id,
+              gameRepository.ticTacToeData);
         }
       },
     );

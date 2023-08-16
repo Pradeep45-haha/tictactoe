@@ -14,8 +14,10 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {      
+    
     GameBloc gameBloc = BlocProvider.of<GameBloc>(context);
+   // gameBloc.add();
     debugPrint(
         "from game screen gamebloc data${gameBloc.gameRepository.room.players[0].nickName}");
     return const SafeArea(
@@ -25,10 +27,10 @@ class _GameScreenState extends State<GameScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               PlayerScore(),
-               SizedBox(
+              SizedBox(
                 height: 80,
               ),
-               Padding(
+              Padding(
                 padding: EdgeInsets.all(16.0),
                 child: SizedBox(
                   height: 400,

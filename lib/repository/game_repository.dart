@@ -2,7 +2,6 @@ import 'package:tictactoe/models/player.dart';
 import 'package:tictactoe/models/room.dart';
 
 class GameRepository {
-  
   final bool initilized;
   GameRepository({
     required this.initilized,

@@ -3,7 +3,7 @@ import 'package:tictactoe/resources/socket_client.dart';
 
 class SocketMethods {
   final _socketClient = SocketClient.instance;
-
+  
   void createRoom(String nickName) {
     //print(_socketClient.socket!.connected);
     if (nickName.isNotEmpty) {
@@ -40,7 +40,8 @@ class SocketMethods {
     }
   }
 
-  void newPlayerJoined(Function(dynamic) callback) async {
+  void newPlayerJoinedListener(Function(dynamic) callback) async {
+    
     _socketClient.socket!.on("newPlayerJoined", callback);
   }
 
@@ -49,7 +50,7 @@ class SocketMethods {
   }
 
   void joinRoomFailureListener(Function(dynamic) callback) async {
-    debugPrint("Join room failure listener socket io");
+    
     _socketClient.socket!.on("joinRoomError", callback);
   }
 

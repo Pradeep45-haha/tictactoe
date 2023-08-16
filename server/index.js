@@ -79,7 +79,7 @@ io.on('connection', (socket) => {
             console.log(e.toString());
         }
 
-        socket.on("boardTap", async ({ index, roomId,  }) => {
+        socket.on("boardTap", async ({ index, roomId, }) => {
             try {
                 console.log("boardTap");
                 let room = await Room.findById(roomId);
@@ -92,6 +92,7 @@ io.on('connection', (socket) => {
                     room.turn = room.players[0];
                 }
                 room = await room.save();
+
                 io.to(roomId).emit("tapped", {
                     index, choice, room,
                 })

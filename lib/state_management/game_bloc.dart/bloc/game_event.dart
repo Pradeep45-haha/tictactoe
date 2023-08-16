@@ -5,7 +5,7 @@ sealed class GameEvent {}
 
 class GameInitialEvent extends GameEvent{}
 
-class NewPlayerJoinedEvent extends GameEvent{}
+
 
 class PlayerTappedEvent extends GameEvent{
   final int index;

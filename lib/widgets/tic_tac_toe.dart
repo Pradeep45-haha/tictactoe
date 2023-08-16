@@ -26,7 +26,9 @@ class _TickTacToeState extends State<TickTacToe> {
               onTap: () {
                 debugPrint("player tapped event added");
                 gameBloc.add(
-                  PlayerTappedEvent(index: index),
+                  PlayerTappedEvent(
+                    index: index,
+                  ),
                 );
               },
               child: Container(
@@ -47,7 +49,7 @@ class _TickTacToeState extends State<TickTacToe> {
                       shadows: const [
                         Shadow(
                           color: Colors.blue,
-                          blurRadius: 40,
+                          blurRadius: 60,
                         ),
                       ],
                     ),
