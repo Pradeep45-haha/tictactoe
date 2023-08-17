@@ -8,3 +8,5 @@ final class GameInitial extends GameState {}
 class NewPlayerJoinedState extends GameState{}
 
 class PlayerGameDataFromServerState extends GameState{}
+
+class PlayerLeftState extends GameState{}

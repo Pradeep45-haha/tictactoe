@@ -12,7 +12,7 @@ var server = http.createServer(app);
 var io = require("socket.io")(server);
 
 io.on('connection', (socket) => {
-    
+
     console.log("socket connection successful");
     socket.on('joinRoom', async ({ nickName, roomId }) => {
         try {
@@ -41,6 +41,7 @@ io.on('connection', (socket) => {
 
             }
             socket.join(roomId);
+            // console.log(roomId);
             room.players.push(player);
             room.isJoin = false;
             room = await room.save();
@@ -73,6 +74,7 @@ io.on('connection', (socket) => {
             const roomId = room._id.toString();
             console.log(roomId);
             socket.join(roomId);
+
             //send room data to client
             io.to(roomId).emit("createRoomSuccess", room);
 
@@ -98,10 +100,24 @@ io.on('connection', (socket) => {
                 console.log(`after saving room room id is ${room._id}`);
                 io.to(roomId).emit("tapped", {
                     index, choice, room,
-                })
+                });
             } catch (e) {
                 console.log(e.toString());
             }
+
+        });
+        socket.on("leaveRoom", async ({ roomId }) => {
+            console.log("Player leave room event ");
+            try {
+                io.to(roomId).emit("playerLeft",
+                    "Player left the game"
+                );
+                socket.leaveAll();
+
+            } catch (e) {
+                console.log(e.toString(),);
+            }
+
         });
 
     });

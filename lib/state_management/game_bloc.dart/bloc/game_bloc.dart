@@ -12,6 +12,7 @@ part 'game_state.dart';
 class GameBloc extends Bloc<GameEvent, GameState> {
   final GameRepository gameRepository;
   bool isTapListenerCalled = false;
+  bool isLeaveRoomListenerCalled = false;
   int index = 0;
 
   SocketMethods socketMethods = SocketMethods();
@@ -26,18 +27,18 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         }
 
         if (event is GameInitialEvent) {
-          debugPrint(
-              "from gameInitial event player tapped on index ${gameRepository.ticTacToeData}");
           callback(data) {
             debugPrint("before emitTap: ${gameRepository.room.id}");
-            debugPrint("game initial callback running");
+
             index = data["index"];
             gameRepository.room = Room.fromMap(data["room"]);
             gameRepository.ticTacToeData[index] = data["choice"];
-            debugPrint(
-                "tictactoe data ${gameRepository.ticTacToeData.toString()}");
+            debugPrint("player socket id logs");
+            debugPrint("player 1 socket id${gameRepository.room.players[0].socketId}");
+            debugPrint("player 2 socket id${gameRepository.room.players[1].socketId}");
+
             gameRepository.filledBoxes = gameRepository.filledBoxes + 1;
-            debugPrint("after emitTap: ${gameRepository.room.id}");
+
             add(
               PlayerGameDataFromServerEvent(),
             );
@@ -46,6 +47,14 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           if (!isTapListenerCalled) {
             socketMethods.tapListener(callback);
             isTapListenerCalled = true;
+          }
+          callback2(data) {
+            debugPrint(data.toString());
+            add(PlayerLeaveSuccessEvent());
+          }
+
+          if (!isLeaveRoomListenerCalled) {
+            socketMethods.leaveRoomListener(callback2);
           }
         }
 
@@ -62,6 +71,21 @@ class GameBloc extends Bloc<GameEvent, GameState> {
               gameRepository.room.id,
             );
           }
+        }
+        if (event is PlayerWantToLeaveEvent) {
+          debugPrint("player want to leave");
+          socketMethods.leaveRoom(gameRepository.room.id);
+        }
+        if (event is PlayerLeaveSuccessEvent) {
+          gameRepository.ticTacToeData = gameRepository.ticTacToeData.map(
+            (_) {
+              return "";
+            },
+          ).toList();
+          debugPrint("player left the game");
+          emit(
+            PlayerLeftState(),
+          );
         }
       },
     );

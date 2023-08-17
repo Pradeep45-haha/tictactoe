@@ -18,7 +18,7 @@ class WaitingScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is NewPlayerJoinedState) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context).pushNamed(GameScreen.routeName);
+            Navigator.popAndPushNamed(context, GameScreen.routeName);
           });
         }
       },

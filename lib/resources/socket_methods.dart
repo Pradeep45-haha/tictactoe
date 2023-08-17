@@ -4,6 +4,13 @@ import 'package:tictactoe/resources/socket_client.dart';
 class SocketMethods {
   final _socketClient = SocketClient.instance;
 
+  get socketClient{
+    return _socketClient;
+  }
+  String getSocketClientId() {
+    return _socketClient.socket!.id!;
+  }
+
   void createRoom(String nickName) {
     //print(_socketClient.socket!.connected);
     if (nickName.isNotEmpty) {
@@ -12,10 +19,6 @@ class SocketMethods {
         {"roomName": nickName},
       );
     }
-  }
-
-  void createRoomSuccessListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("createRoomSuccess", callback);
   }
 
   void joinRoom(String nickName, String roomId) {
@@ -30,6 +33,12 @@ class SocketMethods {
     }
   }
 
+  void leaveRoom(String roomId) {
+    _socketClient.socket!.emit("leaveRoom", {
+      "roomId": roomId,
+    });
+  }
+
   void tapGrid(int index, String roomId) {
     debugPrint("from socket method tapGrid");
     debugPrint("socket connection status ${_socketClient.socket!.connected}");
@@ -37,10 +46,12 @@ class SocketMethods {
       "index": index,
       "roomId": roomId,
     });
-    _socketClient.socket!.onerror((e) {
-      debugPrint(e.toString());
-    });
+   
     debugPrint("from socket method tapGrid ended");
+  }
+
+  void createRoomSuccessListener(Function(dynamic) callback) async {
+    _socketClient.socket!.on("createRoomSuccess", callback);
   }
 
   void newPlayerJoinedListener(Function(dynamic) callback) async {
@@ -57,5 +68,9 @@ class SocketMethods {
 
   void tapListener(Function(dynamic) callback) async {
     _socketClient.socket!.on("tapped", callback);
+  }
+
+  void leaveRoomListener(Function(dynamic) callback) async {
+    _socketClient.socket!.on("playerLeft", callback);
   }
 }

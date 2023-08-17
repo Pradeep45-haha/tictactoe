@@ -16,3 +16,7 @@ class PlayerTappedEvent extends GameEvent{
 class PlayerGameDataFromServerEvent extends GameEvent{
 
 }
+
+class PlayerWantToLeaveEvent extends GameEvent{}
+
+class PlayerLeaveSuccessEvent extends GameEvent{}

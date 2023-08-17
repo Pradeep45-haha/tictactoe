@@ -13,25 +13,26 @@ class _TickTacToeState extends State<TickTacToe> {
   @override
   Widget build(BuildContext context) {
     GameBloc gameBloc = BlocProvider.of<GameBloc>(context);
-    return BlocConsumer<GameBloc, GameState>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        return GridView.builder(
-          itemCount: 9,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 1,
-          ),
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                debugPrint("player tapped event added");
-                gameBloc.add(
-                  PlayerTappedEvent(
-                    index: index,
-                  ),
-                );
-              },
+    return BlocBuilder<GameBloc, GameState>(builder: (context, state) {
+      return GridView.builder(
+        itemCount: 9,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 1,
+        ),
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              debugPrint("player tapped event added");
+              gameBloc.add(
+                PlayerTappedEvent(
+                  index: index,
+                ),
+              );
+            },
+            child: AbsorbPointer(
+              absorbing: gameBloc.gameRepository.room.turn.socketId !=
+                  gameBloc.socketMethods.getSocketClientId(),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -57,10 +58,10 @@ class _TickTacToeState extends State<TickTacToe> {
                   ),
                 ),
               ),
-            );
-          },
-        );
-      },
-    );
+            ),
+          );
+        },
+      );
+    });
   }
 }

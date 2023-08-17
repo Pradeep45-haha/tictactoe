@@ -24,7 +24,7 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
       listener: (context, state) {
         if (state is JoinRoomSuccessState) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushNamed(context, GameScreen.routeName);
+            Navigator.popAndPushNamed(context, GameScreen.routeName);
           });
         }
         if (state is JoinRoomFailureState) {
