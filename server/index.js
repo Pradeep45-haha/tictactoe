@@ -82,43 +82,44 @@ io.on('connection', (socket) => {
             console.log(e.toString());
         }
 
-        socket.on("boardTap", async ({ index, roomId, }) => {
-            try {
+      
 
-                console.log("boardTap");
-                console.log(roomId);
-                let room = await Room.findById(roomId);
-                let choice = room.turn.playerType;
-                if (room.turnIndex == 0) {
-                    room.turnIndex = 1;
-                    room.turn = room.players[1];
-                } else {
-                    room.turnIndex = 0;
-                    room.turn = room.players[0];
-                }
-                room = await room.save();
-                console.log(`after saving room room id is ${room._id}`);
-                io.to(roomId).emit("tapped", {
-                    index, choice, room,
-                });
-            } catch (e) {
-                console.log(e.toString());
+    });
+    socket.on("boardTap", async ({ index, roomId, }) => {
+        try {
+
+            console.log("boardTap");
+            console.log(roomId);
+            let room = await Room.findById(roomId);
+            let choice = room.turn.playerType;
+            if (room.turnIndex == 0) {
+                room.turnIndex = 1;
+                room.turn = room.players[1];
+            } else {
+                room.turnIndex = 0;
+                room.turn = room.players[0];
             }
+            room = await room.save();
+            console.log(`after saving room room id is ${room._id}`);
+            io.to(roomId).emit("tapped", {
+                index, choice, room,
+            });
+        } catch (e) {
+            console.log(e.toString());
+        }
 
-        });
-        socket.on("leaveRoom", async ({ roomId }) => {
-            console.log("Player leave room event ");
-            try {
-                io.to(roomId).emit("playerLeft",
-                    "Player left the game"
-                );
-                socket.leaveAll();
+    });
+    socket.on("leaveRoom", async ({ roomId }) => {
+        console.log("Player leave room event ");
+        try {
+            io.to(roomId).emit("playerLeft",
+                "Player left the game"
+            );
+            socket.leaveAll();
 
-            } catch (e) {
-                console.log(e.toString(),);
-            }
-
-        });
+        } catch (e) {
+            console.log(e.toString(),);
+        }
 
     });
 });

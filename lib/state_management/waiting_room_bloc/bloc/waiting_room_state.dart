@@ -5,4 +5,4 @@ sealed class WaitingRoomState {}
 
 final class WaitingRoomInitial extends WaitingRoomState {}
 
-final class NewPlayerJoinedState extends WaitingRoomState{}
+final class NewPlayerJoinedState extends WaitingRoomState {}
