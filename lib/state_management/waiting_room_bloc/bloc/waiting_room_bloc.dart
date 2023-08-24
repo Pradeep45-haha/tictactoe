@@ -19,7 +19,7 @@ class WaitingRoomBloc extends Bloc<WaitingRoomEvent, WaitingRoomState> {
       : super(WaitingRoomInitial()) {
     on<WaitingRoomEvent>((event, emit) {
       if (event is WaitingRoomInitialEvent) {
-        debugPrint("game initial event running");
+        debugPrint("waiting room initial event running");
 
         callback(dynamic data) {
           debugPrint("new player joined callback executed");

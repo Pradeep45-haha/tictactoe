@@ -27,6 +27,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         }
 
         if (event is GameInitialEvent) {
+          debugPrint("game initial event running");
           callback(data) {
             debugPrint("before emitTap: ${gameRepository.room.id}");
 
@@ -34,8 +35,10 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             gameRepository.room = Room.fromMap(data["room"]);
             gameRepository.ticTacToeData[index] = data["choice"];
             debugPrint("player socket id logs");
-            debugPrint("player 1 socket id${gameRepository.room.players[0].socketId}");
-            debugPrint("player 2 socket id${gameRepository.room.players[1].socketId}");
+            debugPrint(
+                "player 1 socket id${gameRepository.room.players[0].socketId}");
+            debugPrint(
+                "player 2 socket id${gameRepository.room.players[1].socketId}");
 
             gameRepository.filledBoxes = gameRepository.filledBoxes + 1;
 

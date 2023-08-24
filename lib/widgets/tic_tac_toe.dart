@@ -21,18 +21,18 @@ class _TickTacToeState extends State<TickTacToe> {
           childAspectRatio: 1,
         ),
         itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              debugPrint("player tapped event added");
-              gameBloc.add(
-                PlayerTappedEvent(
-                  index: index,
-                ),
-              );
-            },
-            child: AbsorbPointer(
-              absorbing: gameBloc.gameRepository.room.turn.socketId !=
+          return AbsorbPointer(
+             absorbing: gameBloc.gameRepository.room.turn.socketId !=
                   gameBloc.socketMethods.getSocketClientId(),
+            child: GestureDetector(
+              onTap: () {
+                debugPrint("player tapped event added");
+                gameBloc.add(
+                  PlayerTappedEvent(
+                    index: index,
+                  ),
+                );
+              },
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
