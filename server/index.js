@@ -123,19 +123,26 @@ io.on('connection', (socket) => {
                     room = await room.save();
                 }
                 if (room.turn.matchWon >= 6) {
-                   
+                    socket.emit("playerWon", room);
+                    socket.to(roomId).emit("playerDefeated", room);
+                    return;
                 }
-                socket.emit("playerWon", room);
-                socket.to(roomId).emit("playerDefeated", room);
+                socket.emit("addPoints", room);
+                socket.to(roomId).emit("noPoints", room);
                 return;
+
             }
             room.turn.matchWon++;
             room = await room.save();
             if (room.turn.matchWon >= 6) {
-               
+                socket.emit("playerDefeated", room);
+                socket.to(roomId).emit("playerWon", room);
+                return;
             }
-            socket.emit("playerDefeated", room);
-            socket.to(roomId).emit("playerWon", room);
+
+            socket.emit("noPoints", room);
+            socket.to(roomId).emit("addPoints", room);
+
             return;
         } catch (e) {
             console.log(e.toString());
