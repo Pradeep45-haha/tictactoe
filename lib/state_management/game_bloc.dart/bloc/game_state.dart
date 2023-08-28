@@ -5,8 +5,15 @@ sealed class GameState {}
 
 final class GameInitial extends GameState {}
 
-class NewPlayerJoinedState extends GameState{}
+class NewPlayerJoinedState extends GameState {}
 
-class PlayerGameDataFromServerState extends GameState{}
+class PlayerGameDataFromServerState extends GameState {}
 
-class PlayerLeftState extends GameState{}
+class PlayerLeftState extends GameState {}
+
+class PlayerWonState extends GameState {}
+
+class PlayerDefeatedState extends GameState {}
+
+class PlayerDrawState extends GameState {}
+

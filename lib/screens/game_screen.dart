@@ -25,8 +25,25 @@ class _GameScreenState extends State<GameScreen> {
       listener: (context, state) {
         if (state is PlayerLeftState) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.popAndPushNamed(context, MenuScreen.routeName);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              MenuScreen.routeName,
+              (Route<dynamic> route) => false,
+            );
           });
+        }
+        if (state is PlayerDefeatedState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Defeat"),
+            ),
+          );
+        }
+        if (state is PlayerWonState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("You Won"),
+            ),
+          );
         }
       },
       child: SafeArea(

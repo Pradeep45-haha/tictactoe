@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 import 'package:tictactoe/models/room.dart';
 import 'package:tictactoe/repository/game_repository.dart';
 import 'package:tictactoe/resources/socket_methods.dart';
+import 'package:tictactoe/utils/domain_utils.dart';
 
 part 'game_event.dart';
 part 'game_state.dart';
@@ -13,6 +14,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   final GameRepository gameRepository;
   bool isTapListenerCalled = false;
   bool isLeaveRoomListenerCalled = false;
+  bool isWinnerListenerCalled = false;
+  bool isDrawListenerCalled = false;
+  bool isDefeatListenerCalled = false;
   int index = 0;
 
   SocketMethods socketMethods = SocketMethods();
@@ -21,24 +25,35 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<GameEvent>(
       (event, emit) {
         if (event is PlayerGameDataFromServerEvent) {
+          if (gameRepository.room.turn.socketId !=
+              socketMethods.getSocketClientId()) {
+            if (Game.checkWinner(
+                gameRepository: gameRepository,
+                playerType:
+                    gameRepository.room.turn.playerType == "O" ? "X" : "O")) {
+              debugPrint("winner socket methos called");
+              socketMethods.winner(
+                  gameRepository.room.id, gameRepository.room.turn.playerType);
+            } else {
+              if (Game.checkDraw(gameRepository: gameRepository)) {
+                debugPrint("draw socket methos called");
+                socketMethods.draw(
+                  gameRepository.room.id,
+                );
+              }
+            }
+          }
+
           emit(
             PlayerGameDataFromServerState(),
           );
         }
 
         if (event is GameInitialEvent) {
-          debugPrint("game initial event running");
-          callback(data) {
-            debugPrint("before emitTap: ${gameRepository.room.id}");
-
+          tapCallback(data) {
             index = data["index"];
             gameRepository.room = Room.fromMap(data["room"]);
             gameRepository.ticTacToeData[index] = data["choice"];
-            debugPrint("player socket id logs");
-            debugPrint(
-                "player 1 socket id${gameRepository.room.players[0].socketId}");
-            debugPrint(
-                "player 2 socket id${gameRepository.room.players[1].socketId}");
 
             gameRepository.filledBoxes = gameRepository.filledBoxes + 1;
 
@@ -47,28 +62,51 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             );
           }
 
-          if (!isTapListenerCalled) {
-            socketMethods.tapListener(callback);
-            isTapListenerCalled = true;
-          }
-          callback2(data) {
-            debugPrint(data.toString());
+          leaveRoomCallback(data) {
             add(PlayerLeaveSuccessEvent());
           }
 
+          winnerCallback(data) {
+            add(PlayerWonEvent());
+            return;
+          }
+
+          defeatCallback(data) {
+            add(PlayerDefeatedEvent());
+            return;
+          }
+
+          drawCallback(data) {
+            add(PlayerDrawEvent());
+            return;
+          }
+
+          if (!isTapListenerCalled) {
+            socketMethods.tapListener(tapCallback);
+            isTapListenerCalled = true;
+          }
+
           if (!isLeaveRoomListenerCalled) {
-            socketMethods.leaveRoomListener(callback2);
+            socketMethods.leaveRoomListener(leaveRoomCallback);
+          }
+
+          if (!isWinnerListenerCalled) {
+            socketMethods.winnerListener(winnerCallback);
+            isWinnerListenerCalled = true;
+          }
+          if (!isDefeatListenerCalled) {
+            socketMethods.defeatListener(defeatCallback);
+            isDefeatListenerCalled = true;
+          }
+
+          if (!isDrawListenerCalled) {
+            socketMethods.drawListener(drawCallback);
+            isDrawListenerCalled = true;
           }
         }
 
         if (event is PlayerTappedEvent) {
-          debugPrint("player tapped event detected in bloc");
-          debugPrint("player tapped on index ${event.index}");
-          debugPrint("player tapped on index ${gameRepository.ticTacToeData}");
           if (gameRepository.ticTacToeData[event.index] == "") {
-            debugPrint("from game bloc tapGrid called");
-            debugPrint(
-                "roomId from payer event tapped ${gameRepository.room.id}");
             socketMethods.tapGrid(
               event.index,
               gameRepository.room.id,
@@ -76,7 +114,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           }
         }
         if (event is PlayerWantToLeaveEvent) {
-          debugPrint("player want to leave");
           socketMethods.leaveRoom(gameRepository.room.id);
         }
         if (event is PlayerLeaveSuccessEvent) {
@@ -85,11 +122,23 @@ class GameBloc extends Bloc<GameEvent, GameState> {
               return "";
             },
           ).toList();
-          debugPrint("player left the game");
+
           emit(
             PlayerLeftState(),
           );
         }
+
+        if (event is PlayerDefeatedEvent) {
+          emit(PlayerDefeatedState());
+        }
+        if (event is PlayerWonEvent) {
+          emit(PlayerWonState());
+        }
+        if (event is PlayerDrawEvent) {
+          emit(PlayerDrawState());
+        }
+
+        //--------------------------------------------------------//
       },
     );
   }

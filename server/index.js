@@ -19,19 +19,19 @@ io.on('connection', (socket) => {
             console.log(nickName);
             console.log(roomId);
             if (!roomId.match(/^[0-9a-fA-F]{24}$/)) {
-                io.to(roomId).emit("joinRoomError", "Invalid_Room_Id");
+                socket.emit("joinRoomError", "Invalid_Room_Id");
                 console.log("invalid room id");
                 return;
             }
             let room = await Room.findById(roomId);
             if (!room) {
-                io.to(roomId).emit("joinRoomError", "Wrong_Room_Id");
+                socket.emit("joinRoomError", "Wrong_Room_Id");
                 console.log("wrong room id");
                 return;
             }
             console.log(`room is join 1 : ${room.isJoin}`);
             if (!room.isJoin) {
-                io.to(roomId).emit("joinRoomError", "Cannot_Join_Room");
+                socket.emit("joinRoomError", "Cannot_Join_Room");
                 return;
             }
             let player = {
@@ -41,7 +41,6 @@ io.on('connection', (socket) => {
 
             }
             socket.join(roomId);
-            // console.log(roomId);
             room.players.push(player);
             room.isJoin = false;
             room = await room.save();
@@ -82,7 +81,7 @@ io.on('connection', (socket) => {
             console.log(e.toString());
         }
 
-      
+
 
     });
     socket.on("boardTap", async ({ index, roomId, }) => {
@@ -107,6 +106,42 @@ io.on('connection', (socket) => {
         } catch (e) {
             console.log(e.toString());
         }
+
+    });
+    socket.on("winner", async ({ roomId,
+        playerType }) => {
+        console.log("player won event ");
+        try {
+            let room = await Room.findById(roomId);
+            if (!room) {
+                socket.emit("wrongRoomId", "Room Id not found");
+                return;
+            }
+            if (room.turn.playerType == playerType) {
+                if (room.turn.socketId == socket.id) {
+                    room.turn.matchWon++;
+                    room = await room.save();
+                }
+                if (room.turn.matchWon >= 6) {
+                   
+                }
+                socket.emit("playerWon", room);
+                socket.to(roomId).emit("playerDefeated", room);
+                return;
+            }
+            room.turn.matchWon++;
+            room = await room.save();
+            if (room.turn.matchWon >= 6) {
+               
+            }
+            socket.emit("playerDefeated", room);
+            socket.to(roomId).emit("playerWon", room);
+            return;
+        } catch (e) {
+            console.log(e.toString());
+        }
+
+
 
     });
     socket.on("leaveRoom", async ({ roomId }) => {

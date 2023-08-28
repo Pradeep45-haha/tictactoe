@@ -4,15 +4,15 @@ import 'package:tictactoe/resources/socket_client.dart';
 class SocketMethods {
   final _socketClient = SocketClient.instance;
 
-  get socketClient{
+  get socketClient {
     return _socketClient;
   }
+
   String getSocketClientId() {
     return _socketClient.socket!.id!;
   }
 
   void createRoom(String nickName) {
-    //print(_socketClient.socket!.connected);
     if (nickName.isNotEmpty) {
       _socketClient.socket!.emit(
         "createRoom",
@@ -46,8 +46,26 @@ class SocketMethods {
       "index": index,
       "roomId": roomId,
     });
-   
-    debugPrint("from socket method tapGrid ended");
+  }
+
+  // void addPoints(String roomId, String playerType) {
+  //   _socketClient.socket!.emit("addPoints", {
+  //     "roomId": roomId,
+  //     "playerType": playerType,
+  //   });
+  // }
+
+  void winner(String roomId, String playerType) {
+    _socketClient.socket!.emit("winner", {
+      "roomId": roomId,
+      "playerType": playerType,
+    });
+  }
+
+  void draw(String roomId) {
+    _socketClient.socket!.emit("draw", {
+      "roomId": roomId,
+    });
   }
 
   void createRoomSuccessListener(Function(dynamic) callback) async {
@@ -72,5 +90,17 @@ class SocketMethods {
 
   void leaveRoomListener(Function(dynamic) callback) async {
     _socketClient.socket!.on("playerLeft", callback);
+  }
+
+  void winnerListener(Function(dynamic) callback) async {
+    _socketClient.socket!.on("playerWon", callback);
+  }
+
+  void defeatListener(Function(dynamic) callback) async {
+    _socketClient.socket!.on("playerDefeated", callback);
+  }
+
+  void drawListener(Function(dynamic) callback) async {
+    _socketClient.socket!.on("draw", callback);
   }
 }
