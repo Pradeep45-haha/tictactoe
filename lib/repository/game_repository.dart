@@ -6,22 +6,8 @@ class GameRepository {
   GameRepository({
     required this.initilized,
   });
-  final List<Map<String, dynamic>> errorListMap = [];
+  //final List<Map<String, dynamic>> errorListMap = [];
   int filledBoxes = 0;
-  Player player1 = Player(
-    nickName: "",
-    socketId: "",
-    matchWon: "",
-    playerType: "",
-    id: "",
-  );
-  Player player2 = Player(
-    nickName: "",
-    socketId: "",
-    matchWon: "",
-    playerType: "",
-    id: "",
-  );
 
   Room room = Room(
     id: "",
@@ -52,7 +38,4 @@ class GameRepository {
     "",
     "",
   ];
-  String name = "tictactoe";
-  String middleName = "flutter";
-  String lastName = "multiplayer game";
 }

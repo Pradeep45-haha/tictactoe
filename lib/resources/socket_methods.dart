@@ -92,6 +92,14 @@ class SocketMethods {
     _socketClient.socket!.on("playerLeft", callback);
   }
 
+  void addPointsListener(Function(dynamic) callback) async {
+    _socketClient.socket!.on("addPoints", callback);
+  }
+
+  void noPointsListener(Function(dynamic) callback) async {
+    _socketClient.socket!.on("noPoints", callback);
+  }
+
   void winnerListener(Function(dynamic) callback) async {
     _socketClient.socket!.on("playerWon", callback);
   }

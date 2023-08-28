@@ -17,6 +17,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   bool isWinnerListenerCalled = false;
   bool isDrawListenerCalled = false;
   bool isDefeatListenerCalled = false;
+  bool isNoPointsListenerCalled = false;
+  bool isAddPointsListenerCalled = false;
   int index = 0;
 
   SocketMethods socketMethods = SocketMethods();
@@ -81,6 +83,14 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             return;
           }
 
+          noPointsCallback(data) {
+            gameRepository.room = Room.fromMap(data);
+          }
+
+          addPointsCallback(data) {
+            gameRepository.room = Room.fromMap(data);
+          }
+
           if (!isTapListenerCalled) {
             socketMethods.tapListener(tapCallback);
             isTapListenerCalled = true;
@@ -102,6 +112,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           if (!isDrawListenerCalled) {
             socketMethods.drawListener(drawCallback);
             isDrawListenerCalled = true;
+          }
+          if (!isNoPointsListenerCalled) {
+            socketMethods.noPointsListener(noPointsCallback);
+          }
+          if (!isAddPointsListenerCalled) {
+            socketMethods.noPointsListener(addPointsCallback);
           }
         }
 
