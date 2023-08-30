@@ -34,10 +34,9 @@ class _GameScreenState extends State<GameScreen> {
         if (state is PlayerNoPointState) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              
               elevation: 5,
-             backgroundColor: Color.fromARGB(255, 63, 14, 71),
-              duration: Duration(seconds: 2,milliseconds: 500),
+              backgroundColor: Color.fromARGB(255, 63, 14, 71),
+              duration: Duration(seconds: 2, milliseconds: 500),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
@@ -58,7 +57,7 @@ class _GameScreenState extends State<GameScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               showCloseIcon: true,
-               backgroundColor: Color.fromARGB(255, 63, 14, 71),
+              backgroundColor: Color.fromARGB(255, 63, 14, 71),
               elevation: 5,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -67,10 +66,10 @@ class _GameScreenState extends State<GameScreen> {
                       20,
                     )),
               ),
-              duration: Duration(seconds: 2,milliseconds: 500),
+              duration: Duration(seconds: 2, milliseconds: 500),
               content: Text(
                 "You Won",
-                 style: TextStyle(color: Colors.white, fontSize: 18),
+                style: TextStyle(color: Colors.white, fontSize: 18),
                 textAlign: TextAlign.center,
               ),
             ),

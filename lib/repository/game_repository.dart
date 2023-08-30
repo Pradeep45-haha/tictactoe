@@ -9,6 +9,8 @@ class GameRepository {
   //final List<Map<String, dynamic>> errorListMap = [];
   int filledBoxes = 0;
 
+  
+
   Room room = Room(
     id: "",
     turn: Player(

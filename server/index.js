@@ -108,8 +108,7 @@ io.on('connection', (socket) => {
         }
 
     });
-    socket.on("winner", async ({ roomId,
-        playerType }) => {
+    socket.on("winner", async ({ roomId }) => {
         console.log("player won event ");
         try {
             let room = await Room.findById(roomId);
@@ -140,9 +139,8 @@ io.on('connection', (socket) => {
                 return;
             }
 
-            socket.emit("noPoints", room);
-            socket.to(roomId).emit("addPoints", room);
-
+            socket.emit("addPoints", room);
+            socket.to(roomId).emit("noPoints", room);
             return;
         } catch (e) {
             console.log(e.toString());
@@ -150,7 +148,7 @@ io.on('connection', (socket) => {
 
 
 
-    });
+    }); 
     socket.on("leaveRoom", async ({ roomId }) => {
         console.log("Player leave room event ");
         try {

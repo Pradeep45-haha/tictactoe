@@ -109,6 +109,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
           if (!isLeaveRoomListenerCalled) {
             socketMethods.leaveRoomListener(leaveRoomCallback);
+            isLeaveRoomListenerCalled = true;
           }
 
           if (!isWinnerListenerCalled) {
@@ -126,9 +127,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           }
           if (!isNoPointsListenerCalled) {
             socketMethods.noPointsListener(noPointsCallback);
+            isNoPointsListenerCalled = true;
           }
           if (!isAddPointsListenerCalled) {
             socketMethods.addPointsListener(addPointsCallback);
+            isAddPointsListenerCalled = true;
           }
         }
 
