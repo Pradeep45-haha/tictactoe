@@ -117,11 +117,10 @@ io.on('connection', (socket) => {
                 socket.emit("wrongRoomId", "Room Id not found");
                 return;
             }
-            if (room.turn.playerType == playerType) {
-                if (room.turn.socketId == socket.id) {
-                    room.turn.matchWon++;
-                    room = await room.save();
-                }
+
+            if (room.players[0].socketId == socket.id) {
+                room.players[0].matchWon++;
+                room = await room.save();
                 if (room.turn.matchWon >= 6) {
                     socket.emit("playerWon", room);
                     socket.to(roomId).emit("playerDefeated", room);
@@ -130,9 +129,10 @@ io.on('connection', (socket) => {
                 socket.emit("addPoints", room);
                 socket.to(roomId).emit("noPoints", room);
                 return;
-
             }
-            room.turn.matchWon++;
+
+
+            room.players[1].matchWon++;
             room = await room.save();
             if (room.turn.matchWon >= 6) {
                 socket.emit("playerDefeated", room);

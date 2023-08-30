@@ -85,10 +85,21 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
           noPointsCallback(data) {
             gameRepository.room = Room.fromMap(data);
+
+            debugPrint(
+                "from no points ${gameRepository.room.players[0].matchWon}");
+            debugPrint(
+                "from no points ${gameRepository.room.players[1].matchWon}");
+            add(PlayerNoPointEvent());
           }
 
           addPointsCallback(data) {
             gameRepository.room = Room.fromMap(data);
+            debugPrint(
+                "from add points ${gameRepository.room.players[0].matchWon}");
+            debugPrint(
+                "from add points ${gameRepository.room.players[1].matchWon}");
+            add(PlayerPointEvent());
           }
 
           if (!isTapListenerCalled) {
@@ -117,7 +128,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             socketMethods.noPointsListener(noPointsCallback);
           }
           if (!isAddPointsListenerCalled) {
-            socketMethods.noPointsListener(addPointsCallback);
+            socketMethods.addPointsListener(addPointsCallback);
           }
         }
 
@@ -152,6 +163,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         }
         if (event is PlayerDrawEvent) {
           emit(PlayerDrawState());
+        }
+        if (event is PlayerPointEvent) {
+          emit(PlayerPointState());
+        }
+        if (event is PlayerNoPointEvent) {
+          emit(PlayerNoPointState());
         }
 
         //--------------------------------------------------------//

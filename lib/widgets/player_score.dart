@@ -3,11 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tictactoe/state_management/game_bloc.dart/bloc/game_bloc.dart';
 import 'package:tictactoe/utils/colors.dart';
 
-class PlayerScore extends StatelessWidget {
+class PlayerScore extends StatefulWidget {
   const PlayerScore({
     super.key,
   });
 
+  @override
+  State<PlayerScore> createState() => _PlayerScoreState();
+}
+
+class _PlayerScoreState extends State<PlayerScore> {
   @override
   Widget build(BuildContext context) {
     GameBloc gameBloc = BlocProvider.of<GameBloc>(context);
@@ -16,48 +21,52 @@ class PlayerScore extends StatelessWidget {
       fontWeight: FontWeight.bold,
       color: glowColor,
     );
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                gameBloc.gameRepository.room.players[0].nickName,
-                style: style,
+    return BlocBuilder<GameBloc, GameState>(
+      builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    gameBloc.gameRepository.room.players[0].nickName,
+                    style: style,
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    gameBloc.gameRepository.room.players[0].matchWon,
+                    style: style,
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: 16,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    gameBloc.gameRepository.room.players[1].nickName,
+                    style: style,
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    gameBloc.gameRepository.room.players[1].matchWon,
+                    style: style,
+                  ),
+                ],
               ),
-              Text(
-                gameBloc.gameRepository.room.players[0].matchWon,
-                style: style,
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                gameBloc.gameRepository.room.players[1].nickName,
-                style: style,
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Text(
-                gameBloc.gameRepository.room.players[1].matchWon,
-                style: style,
-              ),
-            ],
-          ),
-        )
-      ],
+            )
+          ],
+        );
+      },
     );
   }
 }

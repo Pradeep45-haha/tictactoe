@@ -21,3 +21,7 @@ class PlayerWonEvent extends GameEvent {}
 class PlayerDefeatedEvent extends GameEvent {}
 
 class PlayerDrawEvent extends GameEvent {}
+
+
+class PlayerPointEvent extends GameEvent{}
+class PlayerNoPointEvent extends GameEvent{}

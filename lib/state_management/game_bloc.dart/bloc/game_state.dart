@@ -17,3 +17,6 @@ class PlayerDefeatedState extends GameState {}
 
 class PlayerDrawState extends GameState {}
 
+
+class PlayerPointState extends GameState{}
+class PlayerNoPointState extends GameState{}
