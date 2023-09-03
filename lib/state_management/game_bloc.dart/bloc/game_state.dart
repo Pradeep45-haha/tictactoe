@@ -20,3 +20,4 @@ class PlayerDrawState extends GameState {}
 
 class PlayerPointState extends GameState{}
 class PlayerNoPointState extends GameState{}
+class GameDrawState extends GameState{}

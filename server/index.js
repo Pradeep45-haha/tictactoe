@@ -118,40 +118,96 @@ io.on('connection', (socket) => {
             }
 
             if (room.players[0].socketId == socket.id) {
+                console.log("player 0  1st");
                 room.players[0].matchWon++;
+                room.currentRound++;
                 room = await room.save();
-                if (room.turn.matchWon >= 6) {
+                if (room.currentRound > 6) {
+                    if (room.players[0].matchWon > room.players[1].matchWon) {
+                        socket.emit("playerWon", room);
+                        socket.to(roomId).emit("playerDefeated", room);
+                        return;
+                    }
+                    if (room.players[0].matchWon < room.players[1].matchWon) {
+                        socket.emit("playerDefeated", room);
+                        socket.to(roomId).emit("playerWon", room);
+                        return;
+                    }
+                    if (room.players[0].matchWon == room.players[1].matchWon) {
+                        io.to(roomId).emit("gameDraw", room);
+                        return;
+                    }
+                }
+                socket.emit("addPoints", room);
+                socket.to(roomId).emit("noPoints", room);
+                console.log("player 0  2nd");
+                return;
+            }
+
+            console.log("player 1  1st");
+            room.players[1].matchWon++;
+            room.currentRound++;
+            room = await room.save();
+            if (room.currentRound > 6) {
+                if (room.players[1].matchWon > room.players[0].matchWon) {
                     socket.emit("playerWon", room);
                     socket.to(roomId).emit("playerDefeated", room);
                     return;
                 }
-                socket.emit("addPoints", room);
-                socket.to(roomId).emit("noPoints", room);
-                return;
+                if (room.players[1].matchWon < room.players[0].matchWon) {
+                    socket.emit("playerDefeated", room);
+                    socket.to(roomId).emit("playerWon", room);
+                    return;
+                }
+                if (room.players[0].matchWon == room.players[1].matchWon) {
+                    io.to(roomId).emit("gameDraw", room);
+                    return;
+                }
             }
-
-
-            room.players[1].matchWon++;
-            room = await room.save();
-            if (room.turn.matchWon >= 6) {
-                socket.emit("playerDefeated", room);
-                socket.to(roomId).emit("playerWon", room);
-                return;
-            }
-
             socket.emit("addPoints", room);
             socket.to(roomId).emit("noPoints", room);
+            console.log("player 1  2st");
             return;
         } catch (e) {
             console.log(e.toString());
         }
 
+    });
+
+    socket.on("matchDraw", async ({ roomId }) => {
+        console.log("Player draw event");
+        try {
+            let room = await Room.findById(roomId);
+            if (!room) {
+                console.log("from draw event room id is invalid");
+                socket.emit("wrongRoomId", "Room Id not found");
+                return;
+            }
+            room.currentRound++;
+            room = await room.save();
+            io.to(roomId).emit("matchDraw", room);
+        } catch (e) {
+
+            console.log(e.toString());
+        }
 
 
-    }); 
+
+    });
+
+
     socket.on("leaveRoom", async ({ roomId }) => {
         console.log("Player leave room event ");
         try {
+            let room = await Room.findById(roomId);
+            if (!room) {
+                console.log("from leave event room id is invalid");
+                socket.emit("wrongRoomId", "Room Id not found");
+                return;
+            }
+            await Room.deleteOne({ "_id": roomId });
+
+
             io.to(roomId).emit("playerLeft",
                 "Player left the game"
             );
@@ -162,6 +218,10 @@ io.on('connection', (socket) => {
         }
 
     });
+});
+
+io.on('disconnect', async () => {
+    console.log("socket disconnected");
 });
 
 

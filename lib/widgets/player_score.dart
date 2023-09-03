@@ -47,6 +47,31 @@ class _PlayerScoreState extends State<PlayerScore> {
             ),
             Padding(
               padding: const EdgeInsets.all(30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Round ",
+                    style: style.copyWith(),
+                  ),
+                  Text(
+                    gameBloc.gameRepository.room.currentRound,
+                    style: style.copyWith(
+                        fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                  const Text(
+                    " /",
+                    style: style,
+                  ),
+                  Text(
+                    gameBloc.gameRepository.room.maxRound,
+                    style: style,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(30),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

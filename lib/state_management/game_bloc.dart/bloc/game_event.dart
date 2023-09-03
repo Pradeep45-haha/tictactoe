@@ -25,3 +25,4 @@ class PlayerDrawEvent extends GameEvent {}
 
 class PlayerPointEvent extends GameEvent{}
 class PlayerNoPointEvent extends GameEvent{}
+class GameDrawEvent extends GameEvent{}

@@ -9,7 +9,6 @@ part 'join_room_event.dart';
 part 'join_room_state.dart';
 
 class JoinRoomBloc extends Bloc<JoinRoomEvent, JoinRoomState> {
-  bool joinRoomCalled = false;
   final GameRepository gameRepository;
   TextEditingController roomNameController = TextEditingController();
   TextEditingController roomIdController = TextEditingController();
@@ -36,12 +35,13 @@ class JoinRoomBloc extends Bloc<JoinRoomEvent, JoinRoomState> {
           // print("room id is $roomId");
         }
         if (event is JoinRoomButtonPressed) {
+          socketMethods.connect();
           debugPrint("Join room called");
           socketMethods.joinRoom(
             roomNameController.text,
             roomIdController.text,
           );
-          if (joinRoomCalled == true) {
+          if (gameRepository.isjoinRoomListenerCalled == true) {
             return;
           }
           callbackSuccess(dynamic data) {
@@ -63,7 +63,7 @@ class JoinRoomBloc extends Bloc<JoinRoomEvent, JoinRoomState> {
 
           socketMethods.joinRoomSuccessListener(callbackSuccess);
           socketMethods.joinRoomFailureListener(callbackFailure);
-          joinRoomCalled = true;
+          gameRepository.isjoinRoomListenerCalled = true;
         }
         if (event is JoinRoomSuccessDataFromServerEvent) {
           debugPrint("join Success");

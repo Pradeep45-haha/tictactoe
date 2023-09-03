@@ -75,6 +75,106 @@ class _GameScreenState extends State<GameScreen> {
             ),
           );
         }
+        if (state is PlayerWonState) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return SizedBox(
+                  height: 100,
+                  width: 200,
+                  child: AlertDialog(
+                    title: const Text("Match result"),
+                    content: const Text("You won the game"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            MenuScreen.routeName,
+                            (route) => false,
+                          );
+                        },
+                        child: const Icon(Icons.check),
+                      ),
+                    ],
+                  ),
+                );
+              });
+        }
+
+        if (state is PlayerDrawState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              elevation: 5,
+              backgroundColor: Color.fromARGB(255, 63, 14, 71),
+              duration: Duration(seconds: 2, milliseconds: 500),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(
+                    20,
+                  ),
+                ),
+              ),
+              showCloseIcon: true,
+              content: Text(
+                "Draw",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
+        if (state is GameDrawState) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return SizedBox(
+                  height: 100,
+                  width: 200,
+                  child: AlertDialog(
+                    title: const Text("Match result"),
+                    content: const Text("Game Draw"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            MenuScreen.routeName,
+                            (route) => false,
+                          );
+                        },
+                        child: const Icon(Icons.check),
+                      ),
+                    ],
+                  ),
+                );
+              });
+        }
+
+        if (state is PlayerDefeatedState) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return SizedBox(
+                  height: 100,
+                  width: 200,
+                  child: AlertDialog(
+                    title: const Text("Match result"),
+                    content: const Text("You lost the game"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            MenuScreen.routeName,
+                            (route) => false,
+                          );
+                        },
+                        child: const Icon(Icons.check),
+                      ),
+                    ],
+                  ),
+                );
+              });
+        }
       },
       child: SafeArea(
         child: Scaffold(

@@ -12,7 +12,6 @@ class CreateRoomBloc extends Bloc<CreateRoomEvent, CreateRoomState> {
   final GameRepository gameRepository;
   TextEditingController roomNameController = TextEditingController();
   SocketMethods socketMethods = SocketMethods();
-  bool iscreateRoomSuccessListenerCalled = false;
 
   @override
   Future<void> close() {
@@ -24,15 +23,16 @@ class CreateRoomBloc extends Bloc<CreateRoomEvent, CreateRoomState> {
   CreateRoomBloc({required this.gameRepository}) : super(CreateRoomInitial()) {
     on<CreateRoomEvent>((event, emit) async {
       if (event is CreateRoomWithNameEvent) {
+        socketMethods.connect();
         socketMethods.createRoom(roomNameController.text);
         callback(dynamic data) async {
           gameRepository.room = Room.fromMap(data);
           add(CreateRoomSuccessEvent());
         }
 
-        if (!iscreateRoomSuccessListenerCalled) {
+        if (!gameRepository.iscreateRoomSuccessListenerCalled) {
           socketMethods.createRoomSuccessListener(callback);
-          iscreateRoomSuccessListenerCalled = true;
+          gameRepository.iscreateRoomSuccessListenerCalled = true;
         }
       }
       if (event is CreateRoomSuccessEvent) {

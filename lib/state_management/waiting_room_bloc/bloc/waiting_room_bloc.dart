@@ -11,7 +11,6 @@ part 'waiting_room_event.dart';
 part 'waiting_room_state.dart';
 
 class WaitingRoomBloc extends Bloc<WaitingRoomEvent, WaitingRoomState> {
-  bool isNewPlayerJoinedListenerCalled = false;
   final GameRepository gameRepository;
   SocketMethods socketMethods = SocketMethods();
 
@@ -24,17 +23,18 @@ class WaitingRoomBloc extends Bloc<WaitingRoomEvent, WaitingRoomState> {
         callback(dynamic data) {
           debugPrint("new player joined callback executed");
           gameRepository.room = Room.fromMap(data);
-          add(NewPlayerJoinedEvent(),);
+          add(
+            NewPlayerJoinedEvent(),
+          );
           debugPrint("new player joined callback executed near end");
         }
 
-        if (!isNewPlayerJoinedListenerCalled) {
+        if (!gameRepository.isNewPlayerJoinedListenerCalled) {
           debugPrint("new player joined listener called");
           socketMethods.newPlayerJoinedListener(callback);
-          isNewPlayerJoinedListenerCalled = true;
+          gameRepository.isNewPlayerJoinedListenerCalled = true;
         }
       }
-      
 
       if (event is NewPlayerJoinedEvent) {
         debugPrint("new player joined event detected");

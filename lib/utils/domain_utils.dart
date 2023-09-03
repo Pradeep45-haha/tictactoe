@@ -8,40 +8,35 @@ class Game {
     debugPrint("check winner is running");
     List<String> data = gameRepository.ticTacToeData;
     for (int i = 0; i < data.length; i += 3) {
-      //debugPrint(i.toString());
-      //debugPrint(
-      //"data 1: ${data[i]} , data 2 :${data[i + 1]} , data3 : ${data[i + 2]}");
       if (data[i] == playerType &&
           data[i + 1] == playerType &&
           data[i + 2] == playerType) {
-        //debugPrint(" 1 check winner :true");
+        debugPrint("true from 1st checkWinner, horizontal");
         return true;
       }
     }
 
     for (int i = 0; i < 3; i++) {
-      //debugPrint(
-      // "data 1: ${data[i]} , data 2 :${data[i + 3]} , data3 : ${data[i + 6]}");
       if (data[i] == playerType &&
           data[i + 3] == playerType &&
           data[i + 6] == playerType) {
-        //debugPrint("2 check winner :true");
+        debugPrint("true from 2nd checkWinner, vertical");
         return true;
       }
     }
     if (data[0] == playerType &&
         data[4] == playerType &&
         data[8] == playerType) {
-      //debugPrint("3 check winner :true");
+      debugPrint("true from 3rd checkWinner, lft->rht diagonal");
       return true;
     }
     if (data[2] == playerType &&
         data[4] == playerType &&
         data[6] == playerType) {
-      //debugPrint("4 check winner :true");
+      debugPrint("true from 3rd checkWinner, rht->lft diagonal");
       return true;
     }
-    //debugPrint("check winner :false");
+
     return false;
   }
 

@@ -8,8 +8,17 @@ class SocketMethods {
     return _socketClient;
   }
 
-  String getSocketClientId() {
-    return _socketClient.socket!.id!;
+  String? getSocketClientId() {
+    return _socketClient.socket?.id;
+  }
+
+  void disconnect() {
+    _socketClient.socket?.clearListeners();
+    _socketClient.socket?.disconnect();
+  }
+
+  void connect() {
+    _socketClient.socket?.connect();
   }
 
   void createRoom(String nickName) {
@@ -48,13 +57,6 @@ class SocketMethods {
     });
   }
 
-  // void addPoints(String roomId, String playerType) {
-  //   _socketClient.socket!.emit("addPoints", {
-  //     "roomId": roomId,
-  //     "playerType": playerType,
-  //   });
-  // }
-
   void winner(String roomId, String playerType) {
     _socketClient.socket!.emit("winner", {
       "roomId": roomId,
@@ -63,7 +65,7 @@ class SocketMethods {
   }
 
   void draw(String roomId) {
-    _socketClient.socket!.emit("draw", {
+    _socketClient.socket!.emit("matchDraw", {
       "roomId": roomId,
     });
   }
@@ -108,7 +110,13 @@ class SocketMethods {
     _socketClient.socket!.on("playerDefeated", callback);
   }
 
-  void drawListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("draw", callback);
+
+  void matchDrawListener(Function(dynamic) callback) async {
+    _socketClient.socket!.on("matchDraw", callback);
+  }
+
+
+  void gameDrawListener(Function(dynamic) callback) async {
+    _socketClient.socket!.on("gameDraw", callback);
   }
 }

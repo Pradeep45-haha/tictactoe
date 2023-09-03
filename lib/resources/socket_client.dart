@@ -14,7 +14,12 @@ class SocketClient {
           .build(),
     );
 
-    socket!.connect();
+    socket!.onConnect((data) {
+      debugPrint("socket connected");
+    });
+    socket!.onDisconnect((data) {
+      debugPrint("socket disconnected");
+    });
 
     socket!.onError((data) {
       debugPrint("socket on error $data");

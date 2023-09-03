@@ -12,13 +12,7 @@ part 'game_state.dart';
 
 class GameBloc extends Bloc<GameEvent, GameState> {
   final GameRepository gameRepository;
-  bool isTapListenerCalled = false;
-  bool isLeaveRoomListenerCalled = false;
-  bool isWinnerListenerCalled = false;
-  bool isDrawListenerCalled = false;
-  bool isDefeatListenerCalled = false;
-  bool isNoPointsListenerCalled = false;
-  bool isAddPointsListenerCalled = false;
+
   int index = 0;
 
   SocketMethods socketMethods = SocketMethods();
@@ -30,19 +24,20 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           if (gameRepository.room.turn.socketId !=
               socketMethods.getSocketClientId()) {
             if (Game.checkWinner(
-                gameRepository: gameRepository,
-                playerType:
-                    gameRepository.room.turn.playerType == "O" ? "X" : "O")) {
+                    gameRepository: gameRepository,
+                    playerType: gameRepository.room.turn.playerType == "O"
+                        ? "X"
+                        : "O") ==
+                true) {
               debugPrint("winner socket methos called");
               socketMethods.winner(
                   gameRepository.room.id, gameRepository.room.turn.playerType);
-            } else {
-              if (Game.checkDraw(gameRepository: gameRepository)) {
-                debugPrint("draw socket methos called");
-                socketMethods.draw(
-                  gameRepository.room.id,
-                );
-              }
+            }
+            if (Game.checkDraw(gameRepository: gameRepository)) {
+              debugPrint("draw socket methos called");
+              socketMethods.draw(
+                gameRepository.room.id,
+              );
             }
           }
 
@@ -56,7 +51,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             index = data["index"];
             gameRepository.room = Room.fromMap(data["room"]);
             gameRepository.ticTacToeData[index] = data["choice"];
-
             gameRepository.filledBoxes = gameRepository.filledBoxes + 1;
 
             add(
@@ -79,6 +73,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           }
 
           drawCallback(data) {
+            gameRepository.room = Room.fromMap(data);
             add(PlayerDrawEvent());
             return;
           }
@@ -102,36 +97,44 @@ class GameBloc extends Bloc<GameEvent, GameState> {
             add(PlayerPointEvent());
           }
 
-          if (!isTapListenerCalled) {
+          gameDrawCallback(data) {
+            add(GameDrawEvent());
+          }
+
+          if (!gameRepository.isTapListenerCalled) {
             socketMethods.tapListener(tapCallback);
-            isTapListenerCalled = true;
+            gameRepository.isTapListenerCalled = true;
           }
 
-          if (!isLeaveRoomListenerCalled) {
+          if (!gameRepository.isLeaveRoomListenerCalled) {
             socketMethods.leaveRoomListener(leaveRoomCallback);
-            isLeaveRoomListenerCalled = true;
+            gameRepository.isLeaveRoomListenerCalled = true;
           }
 
-          if (!isWinnerListenerCalled) {
+          if (!gameRepository.isWinnerListenerCalled) {
             socketMethods.winnerListener(winnerCallback);
-            isWinnerListenerCalled = true;
+            gameRepository.isWinnerListenerCalled = true;
           }
-          if (!isDefeatListenerCalled) {
+          if (!gameRepository.isDefeatListenerCalled) {
             socketMethods.defeatListener(defeatCallback);
-            isDefeatListenerCalled = true;
+            gameRepository.isDefeatListenerCalled = true;
           }
 
-          if (!isDrawListenerCalled) {
-            socketMethods.drawListener(drawCallback);
-            isDrawListenerCalled = true;
+          if (!gameRepository.isMatchDrawListenerCalled) {
+            socketMethods.matchDrawListener(drawCallback);
+            gameRepository.isMatchDrawListenerCalled = true;
           }
-          if (!isNoPointsListenerCalled) {
+          if (!gameRepository.isNoPointsListenerCalled) {
             socketMethods.noPointsListener(noPointsCallback);
-            isNoPointsListenerCalled = true;
+            gameRepository.isNoPointsListenerCalled = true;
           }
-          if (!isAddPointsListenerCalled) {
+          if (!gameRepository.isAddPointsListenerCalled) {
             socketMethods.addPointsListener(addPointsCallback);
-            isAddPointsListenerCalled = true;
+            gameRepository.isAddPointsListenerCalled = true;
+          }
+          if (!gameRepository.isGameDrawListenerCalled) {
+            socketMethods.gameDrawListener(gameDrawCallback);
+            gameRepository.isGameDrawListenerCalled = true;
           }
         }
 
@@ -147,6 +150,18 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           socketMethods.leaveRoom(gameRepository.room.id);
         }
         if (event is PlayerLeaveSuccessEvent) {
+          socketMethods.disconnect();
+          gameRepository.isTapListenerCalled = false;
+          gameRepository.isLeaveRoomListenerCalled = false;
+          gameRepository.isWinnerListenerCalled = false;
+          gameRepository.isMatchDrawListenerCalled = false;
+          gameRepository.isDefeatListenerCalled = false;
+          gameRepository.isNoPointsListenerCalled = false;
+          gameRepository.isAddPointsListenerCalled = false;
+          gameRepository.iscreateRoomSuccessListenerCalled = false;
+          gameRepository.isjoinRoomListenerCalled = false;
+          gameRepository.isNewPlayerJoinedListenerCalled = false;
+
           gameRepository.ticTacToeData = gameRepository.ticTacToeData.map(
             (_) {
               return "";
@@ -159,18 +174,63 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         }
 
         if (event is PlayerDefeatedEvent) {
+          gameRepository.ticTacToeData = gameRepository.ticTacToeData.map(
+            (_) {
+              return "";
+            },
+          ).toList();
+          gameRepository.filledBoxes = 0;
+          index = 0;
           emit(PlayerDefeatedState());
         }
         if (event is PlayerWonEvent) {
+          gameRepository.ticTacToeData = gameRepository.ticTacToeData.map(
+            (_) {
+              return "";
+            },
+          ).toList();
+          gameRepository.filledBoxes = 0;
+          index = 0;
           emit(PlayerWonState());
         }
+        if (event is GameDrawEvent) {
+          gameRepository.ticTacToeData = gameRepository.ticTacToeData.map(
+            (_) {
+              return "";
+            },
+          ).toList();
+          gameRepository.filledBoxes = 0;
+          index = 0;
+          emit(GameDrawState());
+        }
         if (event is PlayerDrawEvent) {
+          gameRepository.ticTacToeData = gameRepository.ticTacToeData.map(
+            (_) {
+              return "";
+            },
+          ).toList();
+          gameRepository.filledBoxes = 0;
+          index = 0;
           emit(PlayerDrawState());
         }
         if (event is PlayerPointEvent) {
+          gameRepository.ticTacToeData = gameRepository.ticTacToeData.map(
+            (_) {
+              return "";
+            },
+          ).toList();
+          gameRepository.filledBoxes = 0;
+          index = 0;
           emit(PlayerPointState());
         }
         if (event is PlayerNoPointEvent) {
+          gameRepository.ticTacToeData = gameRepository.ticTacToeData.map(
+            (_) {
+              return "";
+            },
+          ).toList();
+          gameRepository.filledBoxes = 0;
+          index = 0;
           emit(PlayerNoPointState());
         }
 

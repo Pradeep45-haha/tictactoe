@@ -21,9 +21,10 @@ class _TickTacToeState extends State<TickTacToe> {
           childAspectRatio: 1,
         ),
         itemBuilder: (context, index) {
+          //debugPrint("from tictaetoe board socket client id is ${gameBloc.socketMethods.getSocketClientId()}");
           return AbsorbPointer(
-            absorbing: gameBloc.gameRepository.room.turn.socketId !=
-                gameBloc.socketMethods.getSocketClientId(),
+             absorbing: gameBloc.gameRepository.room.turn.socketId !=
+                 (gameBloc.socketMethods.getSocketClientId() ?? gameBloc.gameRepository.room.turn.socketId),
             child: GestureDetector(
               onTap: () {
                 debugPrint("player tapped event added");
