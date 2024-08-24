@@ -60,7 +60,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                   onChanged: (p0) {
                     createRoomBloc.add(CreateRoomNameChangedEvent());
                   },
-                  hintText: "Enter room name",
+                  hintText: "Enter nick name",
                   textEditingController: createRoomBloc.roomNameController,
                 ),
                 SizedBox(

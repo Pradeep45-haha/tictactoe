@@ -5,12 +5,13 @@ class SocketClient {
   io.Socket? socket;
   static SocketClient? _instance;
 
-  SocketClient._() {
+  SocketClient._(String token) {
     socket = io.io(
-      "http://192.168.0.7:3000",
+      "http://127.0.0.1:3000",
       io.OptionBuilder()
           .setTransports(["websocket"])
           .enableAutoConnect()
+          .setAuth({"authorisation": token})
           .build(),
     );
 
@@ -25,7 +26,7 @@ class SocketClient {
       debugPrint("socket on error $data");
     });
   }
-  static SocketClient get instance {
-    return _instance ??= SocketClient._();
+  static SocketClient  getInstance(String token) {
+    return _instance ??= SocketClient._(token);
   }
 }

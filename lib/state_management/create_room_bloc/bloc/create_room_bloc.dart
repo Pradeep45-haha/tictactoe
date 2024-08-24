@@ -11,7 +11,7 @@ part 'create_room_state.dart';
 class CreateRoomBloc extends Bloc<CreateRoomEvent, CreateRoomState> {
   final GameRepository gameRepository;
   TextEditingController roomNameController = TextEditingController();
-  SocketMethods socketMethods = SocketMethods();
+  final SocketMethods socketMethods;
 
   @override
   Future<void> close() {
@@ -20,7 +20,8 @@ class CreateRoomBloc extends Bloc<CreateRoomEvent, CreateRoomState> {
     return super.close();
   }
 
-  CreateRoomBloc({required this.gameRepository}) : super(CreateRoomInitial()) {
+  CreateRoomBloc({required this.gameRepository, required this.socketMethods})
+      : super(CreateRoomInitial()) {
     on<CreateRoomEvent>((event, emit) async {
       if (event is CreateRoomWithNameEvent) {
         socketMethods.connect();

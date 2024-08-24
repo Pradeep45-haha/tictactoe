@@ -17,6 +17,7 @@ class GameRepository {
   bool isDefeatListenerCalled = false;
   bool isNoPointsListenerCalled = false;
   bool isAddPointsListenerCalled = false;
+  bool isconnectionErrorListenerCalled = false;
 
   //for join room bloc
   bool isjoinRoomListenerCalled = false;
@@ -56,4 +57,7 @@ class GameRepository {
     "",
     "",
   ];
+
+  //auth token
+  String? authToken;
 }

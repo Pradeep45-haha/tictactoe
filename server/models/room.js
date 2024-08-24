@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const playerSchema = require("./player");
+const {playerSchema} = require("./player");
 const roomSchema = new mongoose.Schema({
     occupancy: {
         type: Number,

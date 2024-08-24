@@ -12,9 +12,9 @@ part 'waiting_room_state.dart';
 
 class WaitingRoomBloc extends Bloc<WaitingRoomEvent, WaitingRoomState> {
   final GameRepository gameRepository;
-  SocketMethods socketMethods = SocketMethods();
+  SocketMethods socketMethods ;
 
-  WaitingRoomBloc({required this.gameRepository})
+  WaitingRoomBloc({required this.gameRepository,required this.socketMethods})
       : super(WaitingRoomInitial()) {
     on<WaitingRoomEvent>((event, emit) {
       if (event is WaitingRoomInitialEvent) {

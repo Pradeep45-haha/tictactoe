@@ -2,28 +2,38 @@ import 'package:flutter/foundation.dart';
 import 'package:tictactoe/resources/socket_client.dart';
 
 class SocketMethods {
-  final _socketClient = SocketClient.instance;
+  final String token;
 
-  get socketClient {
-    return _socketClient;
+  SocketMethods({
+    required this.token,
+  });
+
+  get getsocketClient {
+    return SocketClient.getInstance(token);
   }
 
   String? getSocketClientId() {
-    return _socketClient.socket?.id;
+    return getsocketClient.socket?.id;
   }
 
   void disconnect() {
-    _socketClient.socket?.clearListeners();
-    _socketClient.socket?.disconnect();
+    getsocketClient.socket?.clearListeners();
+    getsocketClient.socket?.disconnect();
   }
 
   void connect() {
-    _socketClient.socket?.connect();
+    getsocketClient.socket?.connect();
+  }
+
+  void connectionErrorListener(Function(dynamic) callback) async {
+    debugPrint("connect_error ");
+
+    getsocketClient.socket!.on("connect_error", callback);
   }
 
   void createRoom(String nickName) {
     if (nickName.isNotEmpty) {
-      _socketClient.socket!.emit(
+      getsocketClient.socket!.emit(
         "createRoom",
         {"roomName": nickName},
       );
@@ -32,7 +42,7 @@ class SocketMethods {
 
   void joinRoom(String nickName, String roomId) {
     if (nickName.isNotEmpty && roomId.isNotEmpty) {
-      _socketClient.socket!.emit(
+      getsocketClient.socket!.emit(
         "joinRoom",
         {
           "nickName": nickName,
@@ -43,80 +53,78 @@ class SocketMethods {
   }
 
   void leaveRoom(String roomId) {
-    _socketClient.socket!.emit("leaveRoom", {
+    getsocketClient.socket!.emit("leaveRoom", {
       "roomId": roomId,
     });
   }
 
   void tapGrid(int index, String roomId) {
     debugPrint("from socket method tapGrid");
-    debugPrint("socket connection status ${_socketClient.socket!.connected}");
-    _socketClient.socket!.emit("boardTap", {
+    debugPrint("socket connection status ${getsocketClient.socket!.connected}");
+    getsocketClient.socket!.emit("boardTap", {
       "index": index,
       "roomId": roomId,
     });
   }
 
   void winner(String roomId, String playerType) {
-    _socketClient.socket!.emit("winner", {
+    getsocketClient.socket!.emit("winner", {
       "roomId": roomId,
       "playerType": playerType,
     });
   }
 
   void draw(String roomId) {
-    _socketClient.socket!.emit("matchDraw", {
+    getsocketClient.socket!.emit("matchDraw", {
       "roomId": roomId,
     });
   }
 
   void createRoomSuccessListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("createRoomSuccess", callback);
+    getsocketClient.socket!.on("createRoomSuccess", callback);
   }
 
   void newPlayerJoinedListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("newPlayerJoined", callback);
+    getsocketClient.socket!.on("newPlayerJoined", callback);
   }
 
   void joinRoomSuccessListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("joinRoomSuccess", callback);
+    getsocketClient.socket!.on("joinRoomSuccess", callback);
   }
 
   void joinRoomFailureListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("joinRoomError", callback);
+    getsocketClient.socket!.on("joinRoomError", callback);
   }
 
   void tapListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("tapped", callback);
+    getsocketClient.socket!.on("tapped", callback);
   }
 
   void leaveRoomListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("playerLeft", callback);
+    getsocketClient.socket!.on("playerLeft", callback);
   }
 
   void addPointsListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("addPoints", callback);
+    getsocketClient.socket!.on("addPoints", callback);
   }
 
   void noPointsListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("noPoints", callback);
+    getsocketClient.socket!.on("noPoints", callback);
   }
 
   void winnerListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("playerWon", callback);
+    getsocketClient.socket!.on("playerWon", callback);
   }
 
   void defeatListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("playerDefeated", callback);
+    getsocketClient.socket!.on("playerDefeated", callback);
   }
-
 
   void matchDrawListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("matchDraw", callback);
+    getsocketClient.socket!.on("matchDraw", callback);
   }
 
-
   void gameDrawListener(Function(dynamic) callback) async {
-    _socketClient.socket!.on("gameDraw", callback);
+    getsocketClient.socket!.on("gameDraw", callback);
   }
 }

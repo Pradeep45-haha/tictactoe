@@ -6,7 +6,6 @@ import 'package:tictactoe/models/room.dart';
 import 'package:tictactoe/repository/game_repository.dart';
 import 'package:tictactoe/resources/socket_methods.dart';
 import 'package:tictactoe/utils/domain_utils.dart';
-
 part 'game_event.dart';
 part 'game_state.dart';
 
@@ -15,9 +14,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
   int index = 0;
 
-  SocketMethods socketMethods = SocketMethods();
+  SocketMethods socketMethods;
 
-  GameBloc({required this.gameRepository}) : super(GameInitial()) {
+  GameBloc({required this.gameRepository,required this.socketMethods}) : super(GameInitial()) {
     on<GameEvent>(
       (event, emit) {
         if (event is PlayerGameDataFromServerEvent) {

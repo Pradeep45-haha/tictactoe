@@ -69,6 +69,6 @@ class Room {
 
   @override
   String toString() {
-    return 'Room(id: $id, occupancy: $occupancy, maxRound: $maxRound, currentRound: $currentRound, isJoin: $isJoin, turnIndex: $turnIndex, players: $players, version: $version,"turn": $turn,)';
+    return 'Room(id: $id, occupancy: $occupancy, maxRound: $maxRound, currentRound: $currentRound, isJoin: $isJoin, turnIndex: $turnIndex, players: $players, version: $version,"turn": $turn)';
   }
 }

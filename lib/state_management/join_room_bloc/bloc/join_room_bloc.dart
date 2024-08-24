@@ -14,7 +14,7 @@ class JoinRoomBloc extends Bloc<JoinRoomEvent, JoinRoomState> {
   TextEditingController roomIdController = TextEditingController();
   String roomName = "";
   String roomId = "";
-  SocketMethods socketMethods = SocketMethods();
+  SocketMethods socketMethods;
 
   @override
   Future<void> close() {
@@ -22,7 +22,8 @@ class JoinRoomBloc extends Bloc<JoinRoomEvent, JoinRoomState> {
     return super.close();
   }
 
-  JoinRoomBloc({required this.gameRepository}) : super(JoinRoomInitial()) {
+  JoinRoomBloc({required this.gameRepository, required this.socketMethods})
+      : super(JoinRoomInitial()) {
     debugPrint("Join Bloc Room instantiated");
     on<JoinRoomEvent>(
       (event, emit) {
