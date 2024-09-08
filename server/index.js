@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const http = require("http");
 const mongoose = require("mongoose");
@@ -219,9 +220,8 @@ io.on("disconnect", async () => {
 
 app.use(express.json());
 app.use(userRouter);
-// const DB = "mongodb+srv://ironpradeep991:akjjyglc@cluster0.zsphmpt.mongodb.net/?retryWrites=true&w=majority";
-const DB =
-  "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.1.1";
+
+const DB = process.env.DATABASE_URL;
 mongoose
   .connect(DB)
   .then(() => {
